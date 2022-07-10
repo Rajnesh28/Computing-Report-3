@@ -4,30 +4,6 @@ load Data_CR3.mat
 bL3 = LinFit(Data_3D,Y_3D);
 bN3 = NonLinFit(Data_3D,Y_3D);
 
-classification_vector_linear = [];
-classification_vector_non_linear = [];
-
-for i = 1:10
-    x = bL3(1) + bL3(1)*Classify_Data3D(i,1)+ bL3(2)*Classify_Data3D(i,2)+ bL3(3)*Classify_Data3D(i,3);
-    if x>0.5
-        classification_vector_linear(i) = 1;
-    else 
-        classification_vector_linear(i) = 0;
-    end
-end
-
-
-for j = 1:10
-    x = bN3(1) + bN3(1)*Classify_Data3D(j,1)+ bN3(2)*Classify_Data3D(j,2)+ bN3(3)*Classify_Data3D(j,3);
-    f = (1./(1+exp(x)));
-    
-    if f > 0.5
-        classification_vector_non_linear(j) = 1;
-    else 
-        classification_vector_non_linear(j) = 0;
-    end
-end
-
 figure(3);clf;
 plot3(Data_3D(Y_3D==0,1),Data_3D(Y_3D==0,2),Data_3D(Y_3D==0,3),'b.','MarkerSize',24);
 hold on;
@@ -59,3 +35,61 @@ axis off
 zlim([0.05 .2])
 
 plot3(Classify_Data3D(:,1),Classify_Data3D(:,2),Classify_Data3D(:,3),'kx','MarkerSize',24);
+
+%%%%% CODE BELOW HAS BEEN ADDED MY RAJNESH
+
+%%
+%%Solve the classification of the linear and non-linear data
+%%Use a vector element to hold the classifications for each row, 1 if A, 0
+%%if B
+Err_lin = [];
+Err_nonlin = []; 
+
+classification_vector_linear = [];
+classification_vector_non_linear = [];
+
+for i = 1:10
+    x = bL3(1) + bL3(2)*Classify_Data3D(i,1)+ bL3(3)*Classify_Data3D(i,2)+ bL3(4)*Classify_Data3D(i,3);
+    if x>0.5
+        classification_vector_linear(i) = 1;
+    else 
+        classification_vector_linear(i) = 0;
+    end
+end
+
+
+for j = 1:10
+    x = bN3(1) + bN3(2)*Classify_Data3D(j,1)+ bN3(3)*Classify_Data3D(j,2)+ bN3(4)*Classify_Data3D(j,3);
+    f = (1./(1+exp(x)));
+    
+    if f > 0.5
+        classification_vector_non_linear(j) = 1;
+    else 
+        classification_vector_non_linear(j) = 0;
+    end
+end
+
+%%
+%%Calculate the error produced by each fitting type
+
+err_lin_vec = [];
+err_non_lin_vec = [];
+
+for h = 1:10
+    x = bL3(1) + bL3(2)*Classify_Data3D(h,1)+ bL3(3)*Classify_Data3D(h,2) + bL3(4)*Classify_Data3D(h,3);
+    err_lin = (x - classification_vector_linear(h));
+    err_lin_vec(h) = err_lin;
+end
+
+for a = 1:10
+    y = 1./(1+exp(bN3(1) + bN3(2)*Classify_Data3D(a,1)+ bN3(3)*Classify_Data3D(a,2) + bN3(4)*Classify_Data3D(a,3)));
+    err_non_lin = (y - classification_vector_non_linear(a));
+    err_non_lin_vec(a) = err_non_lin;
+end
+
+m = sumsqr(err_lin_vec);
+n = sumsqr(err_non_lin_vec);
+
+err_lin_sum_3d = sum(err_lin_vec, 'all')
+err_non_lin_sum_3d = sum(err_non_lin_vec, 'all')
+
