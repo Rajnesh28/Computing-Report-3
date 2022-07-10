@@ -1,12 +1,39 @@
 % clear all;
 load Data_CR3.mat
 
+bL3 = LinFit(Data_3D,Y_3D);
+bN3 = NonLinFit(Data_3D,Y_3D);
+
+classification_vector_linear = [];
+classification_vector_non_linear = [];
+
+for i = 1:10
+    x = bL3(1) + bL3(1)*Classify_Data3D(i,1)+ bL3(2)*Classify_Data3D(i,2)+ bL3(3)*Classify_Data3D(i,3);
+    if x>0.5
+        classification_vector_linear(i) = 1;
+    else 
+        classification_vector_linear(i) = 0;
+    end
+end
+
+
+for j = 1:10
+    x = bN3(1) + bN3(1)*Classify_Data3D(j,1)+ bN3(2)*Classify_Data3D(j,2)+ bN3(3)*Classify_Data3D(j,3);
+    f = (1./(1+exp(x)));
+    
+    if f > 0.5
+        classification_vector_non_linear(j) = 1;
+    else 
+        classification_vector_non_linear(j) = 0;
+    end
+end
+
 figure(3);clf;
 plot3(Data_3D(Y_3D==0,1),Data_3D(Y_3D==0,2),Data_3D(Y_3D==0,3),'b.','MarkerSize',24);
 hold on;
 plot3(Data_3D(Y_3D==1,1),Data_3D(Y_3D==1,2),Data_3D(Y_3D==1,3),'r.','MarkerSize',24);
 
-bL3 = LinFit(Data_3D,Y_3D);
+
 xm = (1-.1*sign(min(Data_3D(:,1))))*min(Data_3D(:,1));
 xM = (1+.1*sign(max(Data_3D(:,1))))*max(Data_3D(:,1));
 ym = (1-.1*sign(min(Data_3D(:,2))))*min(Data_3D(:,2));
@@ -24,7 +51,7 @@ plot3(Data_3D(Y_3D==0,1),Data_3D(Y_3D==0,2),Data_3D(Y_3D==0,3),'b.','MarkerSize'
 hold on;
 plot3(Data_3D(Y_3D==1,1),Data_3D(Y_3D==1,2),Data_3D(Y_3D==1,3),'r.','MarkerSize',24);
 
-bN3 = NonLinFit(Data_3D,Y_3D);
+
 zz = -(bN3(2)*xx+bN3(3)*yy+bN3(1))/bN3(4);
 h = surf(xx,yy,zz);
 shading interp
