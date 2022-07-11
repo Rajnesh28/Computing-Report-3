@@ -77,19 +77,33 @@ err_non_lin_vec = [];
 
 for h = 1:10
     x = bL3(1) + bL3(2)*Classify_Data3D(h,1)+ bL3(3)*Classify_Data3D(h,2) + bL3(4)*Classify_Data3D(h,3);
-    err_lin = (x - classification_vector_linear(h));
+    err_lin = (x - classification_vector_linear(h))^2;
     err_lin_vec(h) = err_lin;
 end
 
 for a = 1:10
     y = 1./(1+exp(bN3(1) + bN3(2)*Classify_Data3D(a,1)+ bN3(3)*Classify_Data3D(a,2) + bN3(4)*Classify_Data3D(a,3)));
-    err_non_lin = (y - classification_vector_non_linear(a));
+    err_non_lin = (y - classification_vector_non_linear(a))^2;
     err_non_lin_vec(a) = err_non_lin;
 end
-
-m = sumsqr(err_lin_vec);
-n = sumsqr(err_non_lin_vec);
 
 err_lin_sum_3d = sum(err_lin_vec, 'all')
 err_non_lin_sum_3d = sum(err_non_lin_vec, 'all')
 
+
+figure(5);clf;
+%%plot3(Data_3D(Y_3D==0,1),Data_3D(Y_3D==0,2),Data_3D(Y_3D==0,3),'b.','MarkerSize',24);
+hold on;
+%%plot3(Data_3D(Y_3D==1,1),Data_3D(Y_3D==1,2),Data_3D(Y_3D==1,3),'r.','MarkerSize',24);
+hold on;
+plot3(Classify_Data3D(classification_vector_linear==0,1),Classify_Data3D(classification_vector_linear==0,2),Classify_Data3D(classification_vector_linear==0,3),'g.','MarkerSize',24);
+hold on;
+plot3(Classify_Data3D(classification_vector_non_linear==1,1),Classify_Data3D(classification_vector_non_linear==1,2),Classify_Data3D(classification_vector_non_linear==1,3),'m.','MarkerSize',24);
+xm = (1-.1*sign(min(Classify_Data3D(:,1))))*min(Classify_Data3D(:,1));
+xM = (1+.1*sign(max(Classify_Data3D(:,1))))*max(Classify_Data3D(:,1));
+ym = (1-.1*sign(min(Classify_Data3D(:,2))))*min(Classify_Data3D(:,2));
+yM = (1+.1*sign(max(Classify_Data3D(:,2))))*max(Classify_Data3D(:,2));
+[xx,yy] = meshgrid(linspace(xm,xM,101),linspace(ym, yM, 101));
+zz = -(bL3(2)*xx+bL3(3)*yy+bL3(1)-1/2)/bL3(4);
+h = surf(xx,yy,zz);
+shading interp
