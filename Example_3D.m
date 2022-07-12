@@ -92,13 +92,19 @@ err_non_lin_sum_3d = sum(err_non_lin_vec, 'all')
 
 
 figure(5);clf;
-%%plot3(Data_3D(Y_3D==0,1),Data_3D(Y_3D==0,2),Data_3D(Y_3D==0,3),'b.','MarkerSize',24);
+plot3(Data_3D(Y_3D==0,1),Data_3D(Y_3D==0,2),Data_3D(Y_3D==0,3),'b.','MarkerSize',24);
 hold on;
-%%plot3(Data_3D(Y_3D==1,1),Data_3D(Y_3D==1,2),Data_3D(Y_3D==1,3),'r.','MarkerSize',24);
+plot3(Data_3D(Y_3D==1,1),Data_3D(Y_3D==1,2),Data_3D(Y_3D==1,3),'r.','MarkerSize',24);
 hold on;
 plot3(Classify_Data3D(classification_vector_linear==0,1),Classify_Data3D(classification_vector_linear==0,2),Classify_Data3D(classification_vector_linear==0,3),'g.','MarkerSize',24);
 hold on;
+plot3(Classify_Data3D(classification_vector_linear==1,1),Classify_Data3D(classification_vector_linear==1,2),Classify_Data3D(classification_vector_linear==1,3),'m.','MarkerSize',24);
+hold on;
+plot3(Classify_Data3D(classification_vector_non_linear==0,1),Classify_Data3D(classification_vector_non_linear==0,2),Classify_Data3D(classification_vector_non_linear==0,3),'g.','MarkerSize',24);
+hold on
 plot3(Classify_Data3D(classification_vector_non_linear==1,1),Classify_Data3D(classification_vector_non_linear==1,2),Classify_Data3D(classification_vector_non_linear==1,3),'m.','MarkerSize',24);
+hold on;
+
 xm = (1-.1*sign(min(Classify_Data3D(:,1))))*min(Classify_Data3D(:,1));
 xM = (1+.1*sign(max(Classify_Data3D(:,1))))*max(Classify_Data3D(:,1));
 ym = (1-.1*sign(min(Classify_Data3D(:,2))))*min(Classify_Data3D(:,2));
